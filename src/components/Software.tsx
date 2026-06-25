@@ -44,7 +44,7 @@ const Software = () => {
       </section>
 
       {/* Web Driver Section */}
-      <section id="driver" className="relative overflow-hidden mb-32">
+      <section id="driver" className="relative mb-32">
       {/* Decorative background element */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
 
@@ -81,7 +81,7 @@ const Software = () => {
               ))}
             </div>
             
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap gap-4 relative z-10 pb-4">
               <a href="https://drivers.szycdy.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-xl font-medium transition-all shadow-[0_0_20px_rgba(102,105,227,0.4)]">
                 <Globe size={18} />
                 <span>打开网页驱动</span>
