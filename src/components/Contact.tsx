@@ -1,4 +1,4 @@
-import { Mail, MapPin, Clock } from 'lucide-react';
+import { Mail, MapPin, Clock, QrCode } from 'lucide-react';
 
 const Contact = () => {
   return (
@@ -45,6 +45,21 @@ const Contact = () => {
                 <div>
                   <h4 className="text-white font-medium mb-1">公司地址</h4>
                   <p className="text-sm text-zinc-400">深圳市宝安区前海科兴科学园<br/>8栋 1207 室</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-primary shrink-0">
+                  <QrCode size={18} />
+                </div>
+                <div>
+                  <h4 className="text-white font-medium mb-3">微信公众号</h4>
+                  <img
+                    src="/qrcode.jpg"
+                    alt="UNIQMAG 微信公众号"
+                    className="w-36 h-36 rounded-xl border border-white/10 bg-white"
+                  />
+                  <p className="text-sm text-zinc-400 mt-3">扫码关注，获取最新产品资讯与活动信息</p>
                 </div>
               </div>
             </div>

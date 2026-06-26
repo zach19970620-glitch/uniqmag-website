@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Check, Zap, Shield, Cpu, Sliders } from 'lucide-react';
+import { ArrowLeft, Check, Zap, Shield, Cpu, Sliders, Crosshair } from 'lucide-react';
 
 // 产品数据
 const productsData = {
@@ -21,6 +21,7 @@ const productsData = {
     highlights: [
       { title: 'UNILEV 磁悬浮轴', desc: '零机械磨损，顺滑一致的触发行程', icon: <Cpu size={24} /> },
       { title: '8K 回报率', desc: '竞技级性能释放，毫秒级响应', icon: <Zap size={24} /> },
+      { title: 'XTMR 传感器', desc: '0.005mm 触发精度，极致微调', icon: <Crosshair size={24} /> },
       { title: '独家深渊灯效', desc: 'RGB 全彩可控，沉浸式视觉体验', icon: <Sliders size={24} /> }
     ],
     specs: [
@@ -38,18 +39,19 @@ const productsData = {
     id: 'uq71',
     name: 'UQ71',
     slogan: '全球首创无弹簧磁悬浮键盘',
-    tags: ['71%配列', '全铝机身', '磁悬浮'],
+    tags: ['71%配列', '全铝机身', '磁悬浮', '8K回报率'],
     themeColor: '#e7e5e4',
     bgColor: '#0c0c0e',
     colors: [
       { name: '复古白', hex: '#E7E5E4', image: '/media/products/uq71/02-product-retro-white.webp' },
       { name: '红色', hex: '#DC2626', image: '/media/products/uq71/01-product-red.webp' },
-      { name: '灰色', hex: '#78716C', image: '/media/products/uq71/06-product-detail-1.webp' }
+      { name: '锖色', hex: '#78716C', image: '/media/products/uq71/06-product-detail-1.webp' }
     ],
     highlights: [
       { title: '全球首创无弹簧设计', desc: 'UNILEV 磁悬浮技术，颠覆传统手感', icon: <Cpu size={24} /> },
-      { title: '全铝机身', desc: '高级表面处理，旗舰级质感', icon: <Shield size={24} /> },
-      { title: 'XTMR 传感器', desc: '0.005mm 触发精度，极致微调', icon: <Sliders size={24} /> }
+      { title: '8K 回报率', desc: '竞技级性能释放，毫秒级响应', icon: <Zap size={24} /> },
+      { title: 'XTMR 传感器', desc: '0.005mm 触发精度，极致微调', icon: <Crosshair size={24} /> },
+      { title: '全铝机身', desc: '高级表面处理，旗舰级质感', icon: <Shield size={24} /> }
     ],
     specs: [
       { label: '轴体', value: 'UNILEV 磁悬浮轴' },
@@ -176,7 +178,7 @@ const ProductDetail = () => {
             <div className="w-24 h-1 mx-auto rounded-full" style={{ background: `linear-gradient(to right, ${product.themeColor}, transparent)` }}></div>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className={`grid gap-6 ${product.highlights.length === 4 ? 'sm:grid-cols-2 lg:grid-cols-4' : 'md:grid-cols-3'}`}>
             {product.highlights.map((item, idx) => (
               <div key={idx} className="glass-panel p-8 rounded-3xl glass-panel-hover group">
                 <div 

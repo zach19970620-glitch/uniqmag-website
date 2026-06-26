@@ -26,14 +26,16 @@ const Navbar = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? 'py-3' : 'py-5'
+        scrolled
+          ? 'py-3 bg-black/60 backdrop-blur-xl'
+          : 'py-5 bg-transparent'
       }`}
     >
       <div className="container mx-auto px-6">
-        <div className={`glass-panel rounded-2xl px-6 py-3 flex items-center justify-between transition-all duration-300 ${scrolled ? 'bg-black/40' : 'bg-black/20'}`}>
+        <div className="flex items-center justify-between px-2 py-3">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <span className="font-bold text-lg tracking-wide hidden sm:block text-white">UNIQMAG</span>
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="UNIQMAG" className="h-6 sm:h-7 w-auto" />
           </Link>
 
           {/* Desktop Nav */}

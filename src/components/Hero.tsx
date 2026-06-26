@@ -5,7 +5,7 @@ const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden z-10">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0 opacity-40 mix-blend-screen mask-image-b">
+      <div className="absolute inset-0 z-0 opacity-60 mix-blend-screen mask-image-b">
         <video 
           autoPlay 
           loop 
@@ -25,15 +25,15 @@ const Hero = () => {
           全新 UQ71 系列现已发布
         </div>
         
-        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-6 max-w-5xl">
+        <h1 className="text-[72px] font-bold tracking-tight mb-6 max-w-5xl leading-[1.1]">
           <span className="text-gradient">0延迟，全掌控</span>
-          <br />
-          <span className="text-3xl md:text-5xl lg:text-6xl font-medium text-zinc-400 mt-4 block">
-            重塑你的输入体验
-          </span>
         </h1>
+
+        <p className="text-[28px] font-medium text-zinc-400 mb-6 max-w-5xl leading-snug">
+          重塑你的输入体验
+        </p>
         
-        <p className="text-lg md:text-xl text-zinc-400 max-w-2xl mb-12 leading-relaxed">
+        <p className="text-[16px] text-zinc-400 max-w-2xl mb-12 leading-relaxed">
           基于先进磁感应芯片的磁悬浮轴体，摒弃传统物理弹簧。
           <br className="hidden md:block" />
           8000Hz 竞技级回报率，每一次敲击都精准无误。

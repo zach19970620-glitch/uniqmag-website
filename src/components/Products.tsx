@@ -112,7 +112,7 @@ const Products = () => {
       colors: [
         { name: '复古白', hex: '#E7E5E4', image: '/media/products/uq71/02-product-retro-white.webp' },
         { name: '红色', hex: '#DC2626', image: '/media/products/uq71/01-product-red.webp' },
-        { name: '灰色', hex: '#78716C', image: '/media/products/uq71/06-product-detail-1.webp' }
+        { name: '锖色', hex: '#78716C', image: '/media/products/uq71/06-product-detail-1.webp' }
       ]
     }
   ];

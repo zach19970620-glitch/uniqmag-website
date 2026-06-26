@@ -6,8 +6,8 @@ const Footer = () => {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
-            <Link to="/" className="flex items-center gap-2 mb-6 w-fit">
-              <span className="font-bold text-xl tracking-wide text-white">UNIQMAG</span>
+            <Link to="/" className="flex items-center mb-6 w-fit">
+              <img src="/logo.png" alt="UNIQMAG" className="h-8 w-auto" />
             </Link>
             <p className="text-zinc-400 text-sm max-w-sm mb-8">
               一家专注于磁力与 AI 技术的智能硬件公司。我们相信，好的键盘不只是工具，而是你和世界之间的桥梁。
