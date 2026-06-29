@@ -21,7 +21,7 @@ const productsData = {
     highlights: [
       { title: 'UNILEV 磁悬浮轴', desc: '零机械磨损，顺滑一致的触发行程', icon: <Cpu size={24} /> },
       { title: '8K 回报率', desc: '竞技级性能释放，毫秒级响应', icon: <Zap size={24} /> },
-      { title: 'XTMR 传感器', desc: '0.005mm 触发精度，极致微调', icon: <Crosshair size={24} /> },
+      { title: 'TMR 传感器', desc: '0.005mm 触发精度，极致微调', icon: <Crosshair size={24} /> },
       { title: '独家深渊灯效', desc: 'RGB 全彩可控，沉浸式视觉体验', icon: <Sliders size={24} /> }
     ],
     specs: [
@@ -50,7 +50,7 @@ const productsData = {
     highlights: [
       { title: '全球首创无弹簧设计', desc: 'UNILEV 磁悬浮技术，颠覆传统手感', icon: <Cpu size={24} /> },
       { title: '8K 回报率', desc: '竞技级性能释放，毫秒级响应', icon: <Zap size={24} /> },
-      { title: 'XTMR 传感器', desc: '0.005mm 触发精度，极致微调', icon: <Crosshair size={24} /> },
+      { title: 'TMR 传感器', desc: '0.005mm 触发精度，极致微调', icon: <Crosshair size={24} /> },
       { title: '全铝机身', desc: '高级表面处理，旗舰级质感', icon: <Shield size={24} /> }
     ],
     specs: [
