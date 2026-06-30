@@ -1,88 +1,8 @@
 import { motion } from 'framer-motion';
+import aboutData from '../data/about.json';
 
 const About = () => {
-  const teamMembers = [
-    {
-      name: 'Nancy Zhou',
-      role: '联合创始人',
-      desc: 'AI 与技术创新背景，制定品牌战略方向',
-      image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=600&auto=format&fit=crop'
-    },
-    {
-      name: 'Horson Li',
-      role: '联合创始人',
-      desc: '10 年以上磁力技术经验，驱动核心产品创新',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=600&auto=format&fit=crop'
-    },
-    {
-      name: 'William Ma',
-      role: '核心领导',
-      desc: '消费电子与全球品牌战略（美国及欧洲市场）',
-      image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=600&auto=format&fit=crop'
-    }
-  ];
-
-  const coreTech = [
-    {
-      title: '磁悬浮轴体',
-      desc: '基于磁感应芯片，取代传统弹簧，实现顺滑一致的触发行程。',
-      icon: '🧲'
-    },
-    {
-      title: '16K 回报率',
-      desc: '竞技级输入精度，毫秒级响应，满足高强度游戏需求。',
-      icon: '⚡'
-    },
-    {
-      title: 'AI 智能中枢',
-      desc: '学习用户偏好，随使用习惯进化，统一管理外设生态。',
-      icon: '🧠'
-    },
-    {
-      title: '三模磁轴配置',
-      desc: '动态性能调节，按键响应可精细定制至个人手感。',
-      icon: '🎛️'
-    }
-  ];
-
-  const milestones = [
-    {
-      date: '2024年11月',
-      title: '创新的诞生',
-      desc: '我们的发展历程始于一项重要的技术突破：全球首款 Uniqmag 磁悬浮轴体的诞生。作为磁悬浮键盘技术的开创性成果，它打破了传统机械轴体依赖物理摩擦运作的局限，重新定义了键盘输入体验，并引领行业迈向近乎零摩擦、高精度与更持久耐用的未来。',
-      image: '/media/about/202411.webp'
-    },
-    {
-      date: '2025年7月',
-      title: '从实验室到产线',
-      desc: '精密工程与规模化生产的完美结合。我们完成了按键模具的最终定型，通过了严格的可靠性测试，并启动了全自动化生产线。首批测试原型由此诞生。',
-      image: '/media/about/202507.webp'
-    },
-    {
-      date: '2025年8月',
-      title: 'UQ71 系列全球首发',
-      desc: 'Uniqmag UQ71 系列迎来全球首秀。首批 200 台原型机交付行业头部 KOL 与专业媒体进行评测验证。卓越的性能表现证明，Uniqmag 磁轴技术不仅是一项创新概念，更是一项重新定义键盘体验的颠覆性技术。',
-      image: '/media/about/202508.webp'
-    },
-    {
-      date: '2025年9月',
-      title: '社区共建（UQ68 系列）',
-      desc: '随着 UQ68 系列的发布，Uniqmag 产品生态进一步完善。全球键盘社区的热情支持与积极参与，推动我们将磁悬浮技术带向世界各地，让创新输入体验走进更多用户的桌面。',
-      image: '/media/about/202509.webp'
-    },
-    {
-      date: '2025年10月',
-      title: '交付卓越',
-      desc: '在量产交付逐步推进的同时，我们组建并完善了核心专家团队体系，以确保每一款 Uniqmag 产品都凝聚专业支持与顶尖工艺，为用户带来一致且可靠的高品质体验。',
-      image: '/media/about/202510.webp'
-    },
-    {
-      date: '2026年',
-      title: '当下与未来：不止于键盘',
-      desc: '我们正致力于打造完整的智能键盘生态体系，涵盖专属定制外设与智能"Keyboard Mainframe"核心系统，将传统输入设备升级为一个高度整合、智能协同的工作空间生态。',
-      image: '/media/about/2026.webp'
-    }
-  ];
+  const { teamMembers, coreTech, milestones, hero } = aboutData;
 
   return (
     <div className="pt-24 pb-32 relative z-10">
@@ -97,7 +17,7 @@ const About = () => {
           <div className="absolute inset-0 z-0">
             <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent z-10"></div>
             <img 
-              src="/media/about/banner.webp" 
+              src={hero.bannerImage} 
               alt="About UNIQMAG" 
               className="w-full h-full object-cover opacity-60 mix-blend-luminosity"
               onError={(e) => {
@@ -109,24 +29,18 @@ const About = () => {
 
           <div className="relative z-10 p-10 md:p-16 lg:p-24 max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md text-xs font-medium text-zinc-300 mb-8 border border-white/10 tracking-widest uppercase">
-              ABOUT US
+              {hero.tagline}
             </div>
             
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight">
-              精密与创新<br/>
-              <span className="text-gradient">的交汇点</span>
+              {hero.title}<br/>
+              <span className="text-gradient">{hero.titleHighlight}</span>
             </h1>
             
             <div className="space-y-6 text-zinc-300 text-lg leading-relaxed font-light">
-              <p>
-                欢迎来到 UNIQMAG。在这里，精密工艺遇见前沿创新。
-              </p>
-              <p>
-                UNIQMAG 源于一群工程师对现状的不懈挑战。当键盘市场仍过度聚焦于外观设计时，我们选择在性能、个性化与智能功能上突破边界。
-              </p>
-              <p>
-                随着首款重磅产品即将发布，我们的目标清晰而坚定：为每一位爱好者、玩家与专业人士，打造兼具卓越性能、深度定制与前瞻智能的输入设备，开启输入技术的新纪元。
-              </p>
+              {hero.intro.map((paragraph) => (
+                <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+              ))}
             </div>
           </div>
         </motion.div>
@@ -190,7 +104,7 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {coreTech.map((tech, idx) => (
             <motion.div 
-              key={idx}
+              key={tech.title}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -222,7 +136,7 @@ const About = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {teamMembers.map((member, idx) => (
             <motion.div 
-              key={idx}
+              key={member.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -268,7 +182,7 @@ const About = () => {
           <div className="space-y-24">
             {milestones.map((milestone, idx) => (
               <motion.div 
-                key={idx}
+                key={`${milestone.date}-${milestone.title}`}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-100px" }}

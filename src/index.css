@@ -67,4 +67,22 @@
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
   }
+
+  .bg-glow-pulse {
+    opacity: 0.5;
+    animation: glow-pulse 8s ease-in-out infinite;
+    will-change: opacity;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 0.65; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-glow-pulse {
+      animation: none;
+      opacity: 0.45;
+    }
+  }
 }

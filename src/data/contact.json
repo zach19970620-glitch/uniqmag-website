@@ -1,0 +1,16 @@
+{
+  "title": "联系我们",
+  "subtitle": "我们很乐意听到您的声音，团队随时为您提供帮助。请填写表单，或直接发送邮件。",
+  "emails": [
+    { "label": "售前客服", "address": "support@uniqmagx.com" },
+    { "label": "售后支持", "address": "service@uniqmagx.com" },
+    { "label": "商务合作", "address": "hello@uniqmagx.com" }
+  ],
+  "hours": "周一至周五，9:00-18:00（GMT+8）\n我们通常会在 12-24 小时内回复。",
+  "address": "深圳市宝安区前海科兴科学园\n8栋 1207 室",
+  "wechat": {
+    "qrcode": "/qrcode.jpg",
+    "hint": "扫码关注，获取最新产品资讯与活动信息"
+  },
+  "formDisclaimer": "本站点表单仅供展示，正式提交请直接发送邮件至 support@uniqmagx.com"
+}

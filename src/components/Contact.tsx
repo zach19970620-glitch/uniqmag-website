@@ -1,4 +1,5 @@
 import { Mail, MapPin, Clock, QrCode } from 'lucide-react';
+import contactData from '../data/contact.json';
 
 const Contact = () => {
   return (
@@ -6,11 +7,10 @@ const Contact = () => {
       <div className="container mx-auto px-6 mt-12">
         <div className="flex flex-col lg:flex-row gap-16 max-w-6xl mx-auto">
           
-          {/* Contact Info */}
           <div className="lg:w-1/3">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">联系我们</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6">{contactData.title}</h2>
             <p className="text-zinc-400 mb-12">
-              我们很乐意听到您的声音，团队随时为您提供帮助。请填写表单，或直接发送邮件。
+              {contactData.subtitle}
             </p>
             
             <div className="space-y-8">
@@ -21,9 +21,11 @@ const Contact = () => {
                 <div>
                   <h4 className="text-white font-medium mb-1">邮箱</h4>
                   <div className="space-y-2 text-sm text-zinc-400">
-                    <p><span className="text-zinc-500 w-16 inline-block">售前客服</span> support@uniqmagx.com</p>
-                    <p><span className="text-zinc-500 w-16 inline-block">售后支持</span> service@uniqmagx.com</p>
-                    <p><span className="text-zinc-500 w-16 inline-block">商务合作</span> hello@uniqmagx.com</p>
+                    {contactData.emails.map((email) => (
+                      <p key={email.label}>
+                        <span className="text-zinc-500 w-16 inline-block">{email.label}</span> {email.address}
+                      </p>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -34,7 +36,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium mb-1">服务时间</h4>
-                  <p className="text-sm text-zinc-400">周一至周五，9:00-18:00（GMT+8）<br/>我们通常会在 12-24 小时内回复。</p>
+                  <p className="text-sm text-zinc-400 whitespace-pre-line">{contactData.hours}</p>
                 </div>
               </div>
               
@@ -44,7 +46,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="text-white font-medium mb-1">公司地址</h4>
-                  <p className="text-sm text-zinc-400">深圳市宝安区前海科兴科学园<br/>8栋 1207 室</p>
+                  <p className="text-sm text-zinc-400 whitespace-pre-line">{contactData.address}</p>
                 </div>
               </div>
 
@@ -55,17 +57,16 @@ const Contact = () => {
                 <div>
                   <h4 className="text-white font-medium mb-3">微信公众号</h4>
                   <img
-                    src="/qrcode.jpg"
+                    src={contactData.wechat.qrcode}
                     alt="UNIQMAG 微信公众号"
                     className="w-36 h-36 rounded-xl border border-white/10 bg-white"
                   />
-                  <p className="text-sm text-zinc-400 mt-3">扫码关注，获取最新产品资讯与活动信息</p>
+                  <p className="text-sm text-zinc-400 mt-3">{contactData.wechat.hint}</p>
                 </div>
               </div>
             </div>
           </div>
           
-          {/* Contact Form */}
           <div className="lg:w-2/3">
             <form className="glass-panel p-8 md:p-10 rounded-3xl border border-white/10" onSubmit={(e) => e.preventDefault()}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -120,7 +121,7 @@ const Contact = () => {
               </button>
               
               <p className="text-xs text-zinc-500 text-center mt-4">
-                本站点表单仅供展示，正式提交请直接发送邮件至 support@uniqmagx.com
+                {contactData.formDisclaimer}
               </p>
             </form>
           </div>

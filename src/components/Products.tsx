@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import productsData from '../data/products.json';
 
 interface ColorOption {
   name: string;
@@ -23,14 +24,13 @@ const ProductCard = ({ product }: { product: Product }) => {
   return (
     <div className="glass-panel rounded-3xl p-1 overflow-hidden group glass-panel-hover flex flex-col">
       <div className="relative h-96 sm:h-[420px] rounded-2xl overflow-hidden bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-2">
-        {/* Fallback image placeholder if actual image is missing */}
         <div className="absolute inset-0 flex items-center justify-center opacity-20">
           <div className="w-64 h-32 rounded-xl border border-white/20 bg-white/5 flex items-center justify-center">
             Keyboard Image
           </div>
         </div>
         <img 
-          key={activeColor.image} // Add key to force re-render and animation on change if needed
+          key={activeColor.image}
           src={activeColor.image} 
           alt={`${product.name} - ${activeColor.name}`} 
           className="relative z-10 w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 scale-110 group-hover:scale-125 animate-in fade-in zoom-in-95"
@@ -91,31 +91,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 };
 
 const Products = () => {
-  const products: Product[] = [
-    {
-      id: 'uq68',
-      name: 'UQ68',
-      slogan: '全性能释放，紧凑型磁悬浮键盘',
-      tags: ['68%配列', '全铝机身', '磁悬浮', '8K回报率'],
-      colors: [
-        { name: '雾透蓝', hex: '#5EEAD4', image: '/media/products/uq68/18-product-misty-blue.webp' },
-        { name: '克莱因蓝', hex: '#0057B7', image: '/media/products/uq68/01-product-klein-blue.webp' },
-        { name: '橙色', hex: '#F97316', image: '/media/products/uq68/03-product-detail-3.webp' },
-        { name: '玫瑰红', hex: '#E11D48', image: '/media/products/uq68/05-product-rose-red-1.webp' }
-      ]
-    },
-    {
-      id: 'uq71',
-      name: 'UQ71',
-      slogan: '全球首创无弹簧磁悬浮键盘',
-      tags: ['71%配列', '全铝机身', '磁悬浮', '0.005mm精度'],
-      colors: [
-        { name: '复古白', hex: '#E7E5E4', image: '/media/products/uq71/02-product-retro-white.webp' },
-        { name: '红色', hex: '#DC2626', image: '/media/products/uq71/01-product-red.webp' },
-        { name: '锖色', hex: '#78716C', image: '/media/products/uq71/06-product-detail-1.webp' }
-      ]
-    }
-  ];
+  const products = productsData.products as Product[];
 
   return (
     <section id="products" className="py-32 relative z-10 min-h-screen flex items-center">

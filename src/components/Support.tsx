@@ -2,11 +2,16 @@ import { useState, useEffect } from 'react';
 import { HelpCircle, FileText, Truck, RefreshCw, ShieldCheck, ChevronDown, MessageSquare } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import supportData from '../../support.json';
+import supportData from '../data/support.json';
+import type { SupportData } from '../data/support.types';
+
+const data = supportData as SupportData;
 
 const Support = () => {
   const [activeTab, setActiveTab] = useState('faq');
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+  const [openFaqIndex, setOpenFaqIndex] = useState<string | null>(
+    data.sections.find(s => s.id === 'faq')?.faq?.[0]?.question ?? null
+  );
 
   // Scroll to top when tab changes
   useEffect(() => {
@@ -21,7 +26,7 @@ const Support = () => {
     { id: 'privacy', title: '隐私政策', icon: <ShieldCheck size={18} /> },
   ];
 
-  const activeSection = supportData.sections.find(s => s.id === activeTab);
+  const activeSection = data.sections.find(s => s.id === activeTab);
 
   return (
     <div className="pt-24 pb-32 relative z-10 min-h-screen">
@@ -38,9 +43,9 @@ const Support = () => {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 backdrop-blur-md text-xs font-medium text-zinc-300 mb-6 border border-white/10 tracking-widest uppercase">
               SUPPORT CENTER
             </div>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">{supportData.hero.title}</h1>
+            <h1 className="text-4xl md:text-6xl font-bold mb-6">{data.hero.title}</h1>
             <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-              {supportData.hero.subtitle}
+              {data.hero.subtitle}
             </p>
           </motion.div>
         </div>
@@ -101,24 +106,24 @@ const Support = () => {
                     {/* FAQ Type Render */}
                     {activeSection.type === 'faq' && activeSection.faq && (
                       <div className="space-y-4">
-                        {activeSection.faq.map((item, idx) => (
+                        {activeSection.faq.map((item) => (
                           <div 
-                            key={idx} 
+                            key={item.question} 
                             className={`border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 ${
-                              openFaqIndex === idx ? 'bg-white/5 border-white/20' : 'bg-transparent hover:bg-white/[0.02]'
+                              openFaqIndex === item.question ? 'bg-white/5 border-white/20' : 'bg-transparent hover:bg-white/[0.02]'
                             }`}
                           >
                             <button
-                              onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)}
+                              onClick={() => setOpenFaqIndex(openFaqIndex === item.question ? null : item.question)}
                               className="w-full flex items-center justify-between p-6 text-left"
                             >
                               <span className="font-medium text-white pr-8">{item.question}</span>
-                              <span className={`text-zinc-500 transition-transform duration-300 ${openFaqIndex === idx ? 'rotate-180 text-primary' : ''}`}>
+                              <span className={`text-zinc-500 transition-transform duration-300 ${openFaqIndex === item.question ? 'rotate-180 text-primary' : ''}`}>
                                 <ChevronDown size={20} />
                               </span>
                             </button>
                             <AnimatePresence>
-                              {openFaqIndex === idx && (
+                              {openFaqIndex === item.question && (
                                 <motion.div
                                   initial={{ height: 0, opacity: 0 }}
                                   animate={{ height: 'auto', opacity: 1 }}
@@ -139,8 +144,8 @@ const Support = () => {
                     {/* Policy Type Render */}
                     {activeSection.type === 'policy' && activeSection.blocks && (
                       <div className="space-y-12">
-                        {activeSection.blocks.map((block, idx) => (
-                          <div key={idx} className="policy-block">
+                        {activeSection.blocks.map((block) => (
+                          <div key={block.heading} className="policy-block">
                             <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-3">
                               <span className="w-1.5 h-6 bg-primary rounded-full inline-block"></span>
                               {block.heading}
@@ -148,31 +153,29 @@ const Support = () => {
                             
                             {block.paragraphs && (
                               <div className="space-y-4 mb-6">
-                                {block.paragraphs.map((p, pIdx) => (
-                                  <p key={pIdx} className="text-zinc-400 leading-relaxed font-light">{p}</p>
+                                {block.paragraphs.map((p) => (
+                                  <p key={p.slice(0, 32)} className="text-zinc-400 leading-relaxed font-light">{p}</p>
                                 ))}
                               </div>
                             )}
                             
                             {block.list && (
                               <ul className="space-y-3 mb-6">
-                                {block.list.map((item, lIdx) => (
-                                  <li key={lIdx} className="flex items-start gap-3 text-zinc-400 leading-relaxed font-light">
+                                {block.list.map((listItem) => (
+                                  <li key={listItem.slice(0, 32)} className="flex items-start gap-3 text-zinc-400 leading-relaxed font-light">
                                     <span className="text-primary mt-1.5 shrink-0">•</span>
-                                    <span>{item}</span>
+                                    <span>{listItem}</span>
                                   </li>
                                 ))}
                               </ul>
                             )}
 
-                            {/* @ts-ignore */}
                             {block.orderedList && (
                               <ol className="space-y-3 mb-6 counter-reset-list">
-                                {/* @ts-ignore */}
-                                {block.orderedList.map((item: string, oIdx: number) => (
-                                  <li key={oIdx} className="flex items-start gap-3 text-zinc-400 leading-relaxed font-light">
+                                {block.orderedList.map((listItem, oIdx) => (
+                                  <li key={listItem.slice(0, 32)} className="flex items-start gap-3 text-zinc-400 leading-relaxed font-light">
                                     <span className="text-primary font-mono text-sm mt-1 shrink-0 bg-primary/10 w-6 h-6 rounded-full flex items-center justify-center">{oIdx + 1}</span>
-                                    <span className="pt-0.5">{item}</span>
+                                    <span className="pt-0.5">{listItem}</span>
                                   </li>
                                 ))}
                               </ol>

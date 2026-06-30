@@ -1,0 +1,40 @@
+{
+  "hero": {
+    "tagline": "SOFTWARE",
+    "title": "固件与驱动",
+    "subtitle": "下载最新固件与 UQ Driver，释放键盘全部潜能"
+  },
+  "notice": {
+    "title": "重要提示",
+    "content": "固件更新已发布！为确保设备以最佳性能运行，请通过下方链接下载并更新固件。"
+  },
+  "driver": {
+    "badge": "Web Driver 现已上线",
+    "title": "在线驱动",
+    "titleHighlight": "浏览器直接访问，无需安装",
+    "description": "灯光、触发行程、按键映射，一处搞定。从触发行程到个性化灯效，UQ Driver 为你提供直观、强大的定制体验。",
+    "url": "https://drivers.szycdy.com/",
+    "features": [
+      { "icon": "settings", "title": "灯光与个性化", "desc": "全 RGB 灯光控制，输入指示灯，UQ68 独家「深渊灯效」" },
+      { "icon": "sliders", "title": "触发行程调节", "desc": "最低 0.005mm 触发精度，轴体最大行程 3.5mm，自由调节" },
+      { "icon": "zap", "title": "高级按键技术", "desc": "SOCD 竞技必备，Rubber Banding，DKS 动态击键" },
+      { "icon": "keyboard", "title": "宏录制", "desc": "支持宏录制（建议仅用于休闲娱乐）" }
+    ]
+  },
+  "firmwares": [
+    {
+      "id": "uq68",
+      "model": "UQ68",
+      "slogan": "紧凑型高性能",
+      "desc": "适用于 UQ68 系列键盘，包含性能优化与功能改进。更新前请确保设备电量充足，更新过程中请勿断开连接。",
+      "link": "https://uniqmagx.com/pages/firmware"
+    },
+    {
+      "id": "uq71",
+      "model": "UQ71",
+      "slogan": "全球首创无弹簧磁悬浮",
+      "desc": "适用于 UQ71 系列键盘，包含磁轴校准与回报率优化。建议在更新前备份当前配置。",
+      "link": "https://uniqmagx.com/pages/firmware"
+    }
+  ]
+}
