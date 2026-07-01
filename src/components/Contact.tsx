@@ -1,7 +1,54 @@
-import { Mail, MapPin, Clock, QrCode } from 'lucide-react';
+import { useState, type FormEvent } from 'react';
+import { Mail, MapPin, Clock, QrCode, Loader2 } from 'lucide-react';
 import contactData from '../data/contact.json';
 
+const SUBJECT_OPTIONS = [
+  { value: 'pre-sale', label: '售前咨询' },
+  { value: 'after-sale', label: '售后支持' },
+  { value: 'business', label: '商务合作' },
+  { value: 'other', label: '其他事项' },
+] as const;
+
 const Contact = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState<string>(SUBJECT_OPTIONS[0].value);
+  const [message, setMessage] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [feedback, setFeedback] = useState('');
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setStatus('loading');
+    setFeedback('');
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message }),
+      });
+
+      const data = (await response.json()) as { message?: string; error?: string };
+
+      if (!response.ok) {
+        setStatus('error');
+        setFeedback(data.error ?? '发送失败，请稍后重试');
+        return;
+      }
+
+      setStatus('success');
+      setFeedback(data.message ?? '消息已发送，我们会尽快回复您');
+      setName('');
+      setEmail('');
+      setSubject(SUBJECT_OPTIONS[0].value);
+      setMessage('');
+    } catch {
+      setStatus('error');
+      setFeedback('网络错误，请检查连接后重试');
+    }
+  };
+
   return (
     <section id="contact" className="py-32 relative z-10 min-h-screen flex items-center">
       <div className="container mx-auto px-6 mt-12">
@@ -21,9 +68,9 @@ const Contact = () => {
                 <div>
                   <h4 className="text-white font-medium mb-1">邮箱</h4>
                   <div className="space-y-2 text-sm text-zinc-400">
-                    {contactData.emails.map((email) => (
-                      <p key={email.label}>
-                        <span className="text-zinc-500 w-16 inline-block">{email.label}</span> {email.address}
+                    {contactData.emails.map((item) => (
+                      <p key={item.label}>
+                        <span className="text-zinc-500 w-16 inline-block">{item.label}</span> {item.address}
                       </p>
                     ))}
                   </div>
@@ -68,14 +115,18 @@ const Contact = () => {
           </div>
           
           <div className="lg:w-2/3">
-            <form className="glass-panel p-8 md:p-10 rounded-3xl border border-white/10" onSubmit={(e) => e.preventDefault()}>
+            <form className="glass-panel p-8 md:p-10 rounded-3xl border border-white/10" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="space-y-2">
                   <label htmlFor="name" className="text-sm font-medium text-zinc-300">姓名</label>
                   <input 
                     type="text" 
-                    id="name" 
-                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-zinc-600"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                    disabled={status === 'loading'}
+                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-zinc-600 disabled:opacity-50"
                     placeholder="您的名字"
                   />
                 </div>
@@ -83,8 +134,12 @@ const Contact = () => {
                   <label htmlFor="email" className="text-sm font-medium text-zinc-300">邮箱</label>
                   <input 
                     type="email" 
-                    id="email" 
-                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-zinc-600"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={status === 'loading'}
+                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-zinc-600 disabled:opacity-50"
                     placeholder="your@email.com"
                   />
                 </div>
@@ -93,32 +148,59 @@ const Contact = () => {
               <div className="space-y-2 mb-6">
                 <label htmlFor="subject" className="text-sm font-medium text-zinc-300">咨询主题</label>
                 <select 
-                  id="subject" 
-                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all appearance-none"
+                  id="subject"
+                  value={subject}
+                  onChange={(e) => setSubject(e.target.value)}
+                  disabled={status === 'loading'}
+                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all appearance-none disabled:opacity-50"
                 >
-                  <option value="pre-sale" className="bg-zinc-900">售前咨询</option>
-                  <option value="after-sale" className="bg-zinc-900">售后支持</option>
-                  <option value="business" className="bg-zinc-900">商务合作</option>
-                  <option value="other" className="bg-zinc-900">其他事项</option>
+                  {SUBJECT_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value} className="bg-zinc-900">
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
               
               <div className="space-y-2 mb-8">
                 <label htmlFor="message" className="text-sm font-medium text-zinc-300">留言内容</label>
                 <textarea 
-                  id="message" 
+                  id="message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  required
+                  minLength={5}
+                  disabled={status === 'loading'}
                   rows={5}
-                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-zinc-600 resize-none"
+                  className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-zinc-600 resize-none disabled:opacity-50"
                   placeholder="请详细描述您的问题..."
-                ></textarea>
+                />
               </div>
               
               <button 
-                type="submit" 
-                className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white font-medium py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(102,105,227,0.3)] hover:shadow-[0_0_30px_rgba(102,105,227,0.5)]"
+                type="submit"
+                disabled={status === 'loading'}
+                className="w-full bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-600/90 text-white font-medium py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(102,105,227,0.3)] hover:shadow-[0_0_30px_rgba(102,105,227,0.5)] disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
-                发送消息
+                {status === 'loading' ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    发送中...
+                  </>
+                ) : (
+                  '发送消息'
+                )}
               </button>
+
+              {feedback && (
+                <p
+                  className={`text-sm text-center mt-4 ${
+                    status === 'success' ? 'text-green-400' : 'text-red-400'
+                  }`}
+                >
+                  {feedback}
+                </p>
+              )}
               
               <p className="text-xs text-zinc-500 text-center mt-4">
                 {contactData.formDisclaimer}

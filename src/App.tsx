@@ -1,6 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
+import UniqlevSwitch from './components/UniqlevSwitch';
+import TmrSensor from './components/TmrSensor';
 import Products from './components/Products';
 import ProductDetail from './components/ProductDetail';
 import Software from './components/Software';
@@ -18,7 +20,7 @@ function App() {
         <Navbar />
         <main className="flex-grow">
           <Routes>
-            <Route path="/" element={<Hero />} />
+            <Route path="/" element={<><Hero /><UniqlevSwitch /><TmrSensor /></>} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:id" element={<ProductDetail />} />
             <Route path="/software" element={<Software />} />
