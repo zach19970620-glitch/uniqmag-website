@@ -3,7 +3,7 @@
     "tagline": "ABOUT US",
     "title": "精密与创新",
     "titleHighlight": "的交汇点",
-    "bannerImage": "/media/about/banner.webp",
+    "bannerImage": "/assets/about/banner.webp",
     "intro": [
       "欢迎来到 UNIQMAG。在这里，精密工艺遇见前沿创新。",
       "UNIQMAG 源于一群工程师对现状的不懈挑战。当键盘市场仍过度聚焦于外观设计时，我们选择在性能、个性化与智能功能上突破边界。",
@@ -57,37 +57,37 @@
       "date": "2024年11月",
       "title": "创新的诞生",
       "desc": "我们的发展历程始于一项重要的技术突破：全球首款 Uniqmag 磁悬浮轴体的诞生。作为磁悬浮键盘技术的开创性成果，它打破了传统机械轴体依赖物理摩擦运作的局限，重新定义了键盘输入体验，并引领行业迈向近乎零摩擦、高精度与更持久耐用的未来。",
-      "image": "/media/about/202411.webp"
+      "image": "/assets/about/202411.webp"
     },
     {
       "date": "2025年7月",
       "title": "从实验室到产线",
       "desc": "精密工程与规模化生产的完美结合。我们完成了按键模具的最终定型，通过了严格的可靠性测试，并启动了全自动化生产线。首批测试原型由此诞生。",
-      "image": "/media/about/202507.webp"
+      "image": "/assets/about/202507.webp"
     },
     {
       "date": "2025年8月",
       "title": "UQ71 系列全球首发",
       "desc": "Uniqmag UQ71 系列迎来全球首秀。首批 200 台原型机交付行业头部 KOL 与专业媒体进行评测验证。卓越的性能表现证明，Uniqmag 磁轴技术不仅是一项创新概念，更是一项重新定义键盘体验的颠覆性技术。",
-      "image": "/media/about/202508.webp"
+      "image": "/assets/about/202508.webp"
     },
     {
       "date": "2025年9月",
       "title": "社区共建（UQ68 系列）",
       "desc": "随着 UQ68 系列的发布，Uniqmag 产品生态进一步完善。全球键盘社区的热情支持与积极参与，推动我们将磁悬浮技术带向世界各地，让创新输入体验走进更多用户的桌面。",
-      "image": "/media/about/202509.webp"
+      "image": "/assets/about/202509.webp"
     },
     {
       "date": "2025年10月",
       "title": "交付卓越",
       "desc": "在量产交付逐步推进的同时，我们组建并完善了核心专家团队体系，以确保每一款 Uniqmag 产品都凝聚专业支持与顶尖工艺，为用户带来一致且可靠的高品质体验。",
-      "image": "/media/about/202510.webp"
+      "image": "/assets/about/202510.webp"
     },
     {
       "date": "2026年",
       "title": "当下与未来：不止于键盘",
       "desc": "我们正致力于打造完整的智能键盘生态体系，涵盖专属定制外设与智能\"Keyboard Mainframe\"核心系统，将传统输入设备升级为一个高度整合、智能协同的工作空间生态。",
-      "image": "/media/about/2026.webp"
+      "image": "/assets/about/2026.webp"
     }
   ]
 }

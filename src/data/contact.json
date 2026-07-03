@@ -9,7 +9,7 @@
   "hours": "周一至周五，9:00-18:00（GMT+8）\n我们通常会在 12-24 小时内回复。",
   "address": "深圳市宝安区前海科兴科学园\n8栋 1207 室",
   "wechat": {
-    "qrcode": "/qrcode.jpg",
+    "qrcode": "/assets/qrcode.jpg",
     "hint": "扫码关注，获取最新产品资讯与活动信息"
   },
   "formDisclaimer": "提交后我们会将消息发送至团队邮箱，通常在 12-24 小时内回复。"

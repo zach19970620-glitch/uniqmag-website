@@ -36,7 +36,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between px-2 py-3">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="UNIQMAG" className="h-6 sm:h-7 w-auto" />
+            <img src="/assets/logo.png" alt="UNIQMAG" className="h-6 sm:h-7 w-auto" />
           </Link>
 
           {/* Desktop Nav */}

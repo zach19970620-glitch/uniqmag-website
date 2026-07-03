@@ -102,7 +102,7 @@ const TmrSensor = () => {
                 aria-hidden
               />
               <img
-                src="/media/about/TMR_Chip.webp"
+                src="/assets/about/TMR_Chip.webp"
                 alt="TMR 隧道磁阻传感芯片特写"
                 className="w-full h-auto object-cover scale-[1.02]"
                 loading="lazy"

@@ -8,10 +8,10 @@
       "themeColor": "#6669e3",
       "bgColor": "#08121a",
       "colors": [
-        { "name": "雾透蓝", "hex": "#5EEAD4", "image": "/media/products/uq68/18-product-misty-blue.webp" },
-        { "name": "克莱因蓝", "hex": "#0057B7", "image": "/media/products/uq68/01-product-klein-blue.webp" },
-        { "name": "橙色", "hex": "#F97316", "image": "/media/products/uq68/03-product-detail-3.webp" },
-        { "name": "玫瑰红", "hex": "#E11D48", "image": "/media/products/uq68/05-product-rose-red-1.webp" }
+        { "name": "雾透蓝", "hex": "#5EEAD4", "image": "/assets/products/uq68/18-product-misty-blue.webp" },
+        { "name": "克莱因蓝", "hex": "#0057B7", "image": "/assets/products/uq68/01-product-klein-blue.webp" },
+        { "name": "橙色", "hex": "#F97316", "image": "/assets/products/uq68/03-product-detail-3.webp" },
+        { "name": "玫瑰红", "hex": "#E11D48", "image": "/assets/products/uq68/05-product-rose-red-1.webp" }
       ],
       "highlights": [
         { "title": "UNILEV 磁悬浮轴", "desc": "零机械磨损，顺滑一致的触发行程", "icon": "cpu" },
@@ -38,9 +38,9 @@
       "themeColor": "#e7e5e4",
       "bgColor": "#0c0c0e",
       "colors": [
-        { "name": "复古白", "hex": "#E7E5E4", "image": "/media/products/uq71/02-product-retro-white.webp" },
-        { "name": "红色", "hex": "#DC2626", "image": "/media/products/uq71/01-product-red.webp" },
-        { "name": "锖色", "hex": "#78716C", "image": "/media/products/uq71/06-product-detail-1.webp" }
+        { "name": "复古白", "hex": "#E7E5E4", "image": "/assets/products/uq71/02-product-retro-white.webp" },
+        { "name": "红色", "hex": "#DC2626", "image": "/assets/products/uq71/01-product-red.webp" },
+        { "name": "锖色", "hex": "#78716C", "image": "/assets/products/uq71/06-product-detail-1.webp" }
       ],
       "highlights": [
         { "title": "全球首创无弹簧设计", "desc": "UNILEV 磁悬浮技术，颠覆传统手感", "icon": "cpu" },

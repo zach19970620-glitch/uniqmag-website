@@ -7,7 +7,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center mb-6 w-fit">
-              <img src="/logo.png" alt="UNIQMAG" className="h-8 w-auto" />
+              <img src="/assets/logo.png" alt="UNIQMAG" className="h-8 w-auto" />
             </Link>
             <p className="text-zinc-400 text-sm max-w-sm mb-8">
               一家专注于磁力与 AI 技术的智能硬件公司。我们相信，好的键盘不只是工具，而是你和世界之间的桥梁。
@@ -39,7 +39,7 @@ const Footer = () => {
           <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4">
             <p>&copy; {new Date().getFullYear()} UNIQMAG 一磁定音. 保留所有权利。</p>
             <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">
-              粤ICP备2026078796号-1
+              粤ICP备2026078796号
             </a>
           </div>
           <div className="flex gap-4">

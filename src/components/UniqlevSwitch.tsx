@@ -40,7 +40,7 @@ const UniqlevSwitch = () => {
             />
             <div className="relative rounded-2xl md:rounded-3xl overflow-hidden border border-white/[0.06] shadow-[0_24px_80px_rgba(0,0,0,0.65)]">
               <img
-                src="/media/videos/消散.gif"
+                src="/assets/videos/消散.gif"
                 alt="传统机械弹簧轴体消散，Uniqlev 无弹簧磁悬浮轴体取而代之"
                 className="w-full h-auto object-cover"
                 loading="lazy"

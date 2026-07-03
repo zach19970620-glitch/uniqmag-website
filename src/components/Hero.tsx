@@ -12,9 +12,9 @@ const Hero = () => {
           muted 
           playsInline
           className="w-full h-full object-cover"
-          poster="/media/videos/hero-poster.webp"
+          poster="/assets/videos/hero-poster.webp"
         >
-          <source src="/media/videos/hero.mp4" type="video/mp4" />
+          <source src="/assets/videos/hero.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-background"></div>
       </div>
