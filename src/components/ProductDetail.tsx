@@ -2,7 +2,9 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Check, Zap, Shield, Cpu, Sliders, Crosshair } from 'lucide-react';
-import productsData from '../data/products.json';
+import { useShopCatalog } from '../hooks/useShopCatalog';
+import { productContentBySlug } from '../lib/productCatalog';
+import ProductBuyPanel from './product/ProductBuyPanel';
 
 const iconMap: Record<string, ReactNode> = {
   cpu: <Cpu size={24} />,
@@ -12,14 +14,10 @@ const iconMap: Record<string, ReactNode> = {
   shield: <Shield size={24} />,
 };
 
-const productMap = Object.fromEntries(
-  productsData.products.map((p) => [p.id, p])
-) as Record<string, (typeof productsData.products)[number]>;
-
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const product = id ? productMap[id] : null;
-  
+  const product = id ? productContentBySlug[id.toLowerCase()] : null;
+  const { forContent, loading: shopLoading, error: shopError } = useShopCatalog();
   const [activeColorIdx, setActiveColorIdx] = useState(0);
 
   useEffect(() => {
@@ -84,14 +82,15 @@ const ProductDetail = () => {
             </div>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-4 tracking-tight">{product.name}</h1>
-            <p className="text-xl text-zinc-400 mb-10 pb-10 border-b border-white/10">{product.slogan}</p>
+            <p className="text-xl text-zinc-400 mb-8">{product.slogan}</p>
 
-            <div className="mb-10">
+            <div className="mb-8">
               <h3 className="text-sm font-medium text-zinc-400 mb-4 uppercase tracking-wider">选择颜色 : <span className="text-white ml-2">{activeColor.name}</span></h3>
               <div className="flex flex-wrap gap-4">
                 {product.colors.map((color, idx) => (
                   <button
                     key={color.name}
+                    type="button"
                     onClick={() => setActiveColorIdx(idx)}
                     className={`w-12 h-12 rounded-full transition-all duration-300 relative flex items-center justify-center ${
                       activeColorIdx === idx 
@@ -107,6 +106,15 @@ const ProductDetail = () => {
                   </button>
                 ))}
               </div>
+            </div>
+
+            <div id="buy" className="border-t border-white/10 pt-8">
+              <ProductBuyPanel
+                shop={forContent(product)}
+                loading={shopLoading}
+                unavailableHint={shopError || undefined}
+                fromPath={`/products/${product.id}`}
+              />
             </div>
           </motion.div>
         </div>

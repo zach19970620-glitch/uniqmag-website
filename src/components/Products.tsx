@@ -1,75 +1,147 @@
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import productsData from '../data/products.json';
+import { ArrowRight, Loader2, ShoppingBag } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useShopCatalog } from '../hooks/useShopCatalog';
+import { formatCentLabel } from '../lib/money';
+import {
+  productContentList,
+  type ProductContent,
+} from '../lib/productCatalog';
+import type { ShopProduct } from '../api/types';
+import { useAuth } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
-interface ColorOption {
-  name: string;
-  hex: string;
-  image: string;
-}
-
-interface Product {
-  id: string;
-  name: string;
-  slogan: string;
-  tags: string[];
-  colors: ColorOption[];
-}
-
-const ProductCard = ({ product }: { product: Product }) => {
+const ProductCard = ({
+  product,
+  shop,
+  shopLoading,
+}: {
+  product: ProductContent;
+  shop?: ShopProduct;
+  shopLoading: boolean;
+}) => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+  const { addItem } = useCart();
   const [activeColorIdx, setActiveColorIdx] = useState(0);
+  const [busy, setBusy] = useState(false);
+  const [hint, setHint] = useState('');
+  const [error, setError] = useState('');
   const activeColor = product.colors[activeColorIdx];
+  const canBuy = Boolean(shop && shop.status !== 'off' && shop.stock_summary > 0);
+
+  const requireLogin = () => {
+    if (isAuthenticated) return false;
+    navigate('/login', { state: { from: '/products' } });
+    return true;
+  };
+
+  const handleAddToCart = async () => {
+    if (!shop || requireLogin()) return;
+    setBusy(true);
+    setError('');
+    try {
+      await addItem({
+        product_id: shop.id,
+        sku: shop.sku,
+        title: shop.name,
+        cover: shop.cover,
+        price_cent: shop.price_cent,
+        stock_summary: shop.stock_summary,
+        qty: 1,
+      });
+      setHint('已加入购物车');
+      window.setTimeout(() => setHint(''), 2000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '加购失败');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  /** 立即购买：单件直达结算，不动购物车 */
+  const handleBuyNow = () => {
+    if (!shop || requireLogin()) return;
+    navigate('/checkout', {
+      state: {
+        buyNow: {
+          product_id: shop.id,
+          sku: shop.sku,
+          title: shop.name,
+          cover: shop.cover,
+          price_cent: shop.price_cent,
+          stock_summary: shop.stock_summary,
+          qty: 1,
+        },
+      },
+    });
+  };
 
   return (
-    <div className="glass-panel rounded-3xl p-1 overflow-hidden group glass-panel-hover flex flex-col">
-      <div className="relative h-96 sm:h-[420px] rounded-2xl overflow-hidden bg-gradient-to-b from-white/5 to-transparent flex items-center justify-center p-2">
-        <div className="absolute inset-0 flex items-center justify-center opacity-20">
-          <div className="w-64 h-32 rounded-xl border border-white/20 bg-white/5 flex items-center justify-center">
-            Keyboard Image
-          </div>
-        </div>
-        <img 
+    <div className="glass-panel group flex flex-col overflow-hidden rounded-3xl p-1 glass-panel-hover">
+      <div className="relative flex h-96 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-b from-white/5 to-transparent p-2 sm:h-[420px]">
+        <img
           key={activeColor.image}
-          src={activeColor.image} 
-          alt={`${product.name} - ${activeColor.name}`} 
-          className="relative z-10 w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 scale-110 group-hover:scale-125 animate-in fade-in zoom-in-95"
+          src={activeColor.image}
+          alt={`${product.name} - ${activeColor.name}`}
+          className="animate-in fade-in zoom-in-95 relative z-10 h-full w-full scale-110 object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-125"
           onError={(e) => {
             (e.target as HTMLImageElement).style.display = 'none';
           }}
         />
-        <div 
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full blur-[100px] opacity-20 transition-all duration-500 group-hover:opacity-40"
+        <div
+          className="absolute top-1/2 left-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-20 blur-[100px] transition-all duration-500 group-hover:opacity-40"
           style={{ backgroundColor: activeColor.hex }}
-        ></div>
+        />
       </div>
-      
-      <div className="p-8 flex flex-col flex-grow">
-        <div className="flex flex-wrap gap-2 mb-4">
-          {product.tags.map(tag => (
-            <span key={tag} className="text-xs font-medium px-3 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-300">
+
+      <div className="flex flex-grow flex-col p-8">
+        <div className="mb-4 flex flex-wrap gap-2">
+          {product.tags.map((tag) => (
+            <span
+              key={tag}
+              className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-zinc-300"
+            >
               {tag}
             </span>
           ))}
         </div>
-        
-        <h3 className="text-3xl font-bold mb-2">{product.name}</h3>
-        <p className="text-zinc-400 mb-6 h-12">{product.slogan}</p>
-        
-        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/5">
+
+        <h3 className="mb-2 text-3xl font-bold">{product.name}</h3>
+        <p className="mb-4 h-12 text-zinc-400">{product.slogan}</p>
+
+        <div className="mb-6 min-h-7 text-sm">
+          {shopLoading ? (
+            <span className="text-zinc-500">同步价格中…</span>
+          ) : shop ? (
+            <span className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="text-xl font-semibold text-white tabular-nums">
+                {formatCentLabel(shop.price_cent)}
+              </span>
+              <span className="text-zinc-500">
+                {shop.stock_summary > 0 ? `现货 ${shop.stock_summary}` : '暂时缺货'}
+              </span>
+            </span>
+          ) : (
+            <span className="text-zinc-500">详情页了解产品</span>
+          )}
+        </div>
+
+        <div className="mt-auto flex items-center justify-between border-t border-white/5 pt-4">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               {product.colors.map((color, idx) => (
                 <button
                   key={color.name}
+                  type="button"
                   onClick={(e) => {
                     e.preventDefault();
                     setActiveColorIdx(idx);
                   }}
-                  className={`w-6 h-6 rounded-full transition-all duration-300 ${
-                    activeColorIdx === idx 
-                      ? 'ring-2 ring-white ring-offset-2 ring-offset-black scale-110' 
-                      : 'opacity-70 hover:opacity-100 hover:scale-110'
+                  className={`h-6 w-6 rounded-full transition-all duration-300 ${
+                    activeColorIdx === idx
+                      ? 'scale-110 ring-2 ring-white ring-offset-2 ring-offset-black'
+                      : 'opacity-70 hover:scale-110 hover:opacity-100'
                   }`}
                   style={{ backgroundColor: color.hex }}
                   title={color.name}
@@ -77,35 +149,90 @@ const ProductCard = ({ product }: { product: Product }) => {
                 />
               ))}
             </div>
-            <span className="text-sm text-zinc-400 ml-2 hidden sm:block">{activeColor.name}</span>
+            <span className="ml-2 hidden text-sm text-zinc-400 sm:block">
+              {activeColor.name}
+            </span>
           </div>
-          
-          <Link to={`/products/${product.id}`} className="flex items-center gap-2 bg-white/10 hover:bg-white text-white hover:text-black px-5 py-2.5 rounded-xl font-medium transition-all shrink-0">
-            <span>了解更多</span>
-            <ArrowRight size={16} />
+
+          <Link
+            to={`/products/${product.id}`}
+            className="flex shrink-0 items-center gap-1.5 text-sm text-zinc-400 transition-colors hover:text-white"
+          >
+            <span>详情</span>
+            <ArrowRight size={14} strokeWidth={1.5} />
           </Link>
         </div>
+
+        {canBuy ? (
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={() => void handleAddToCart()}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/15 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/5 disabled:opacity-50"
+            >
+              {busy ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <ShoppingBag size={16} strokeWidth={1.5} />
+              )}
+              加入购物车
+            </button>
+            <button
+              type="button"
+              disabled={busy}
+              onClick={handleBuyNow}
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-medium text-black transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-zinc-200 active:scale-[0.98] disabled:opacity-50"
+            >
+              立即购买
+            </button>
+          </div>
+        ) : (
+          <div className="mt-4">
+            <Link
+              to={`/products/${product.id}`}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/10 px-5 py-2.5 font-medium text-white transition-all hover:bg-white hover:text-black"
+            >
+              <span>了解更多</span>
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        )}
+
+        {hint ? <p className="mt-3 text-sm text-emerald-400">{hint}</p> : null}
+        {error ? (
+          <p className="mt-3 text-sm text-red-400" role="alert">
+            {error}
+          </p>
+        ) : null}
       </div>
     </div>
   );
 };
 
 const Products = () => {
-  const products = productsData.products as Product[];
+  const { forContent, loading } = useShopCatalog();
 
   return (
-    <section id="products" className="py-32 relative z-10 min-h-screen flex items-center">
-      <div className="container mx-auto px-6 mt-12">
-        <div className="text-center mb-20">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-gradient">探索磁悬浮系列</h2>
-          <p className="text-zinc-400 text-lg max-w-2xl mx-auto">
-            专为竞技玩家与专业人士打造，将精密工程与前沿科技完美融合。
+    <section id="products" className="relative z-10 flex min-h-screen items-center py-32">
+      <div className="container mx-auto mt-12 px-6">
+        <div className="mb-20 text-center">
+          <h2 className="mb-4 text-3xl font-bold text-gradient md:text-5xl">
+            探索磁悬浮系列
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-zinc-400">
+            专为竞技玩家与专业人士打造，将精密工程与前沿科技完美融合。现货可直接下单。
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+        <div className="grid gap-8 md:grid-cols-2 lg:gap-12">
+          {productContentList.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              shop={forContent(product)}
+              shopLoading={loading}
+            />
           ))}
         </div>
       </div>

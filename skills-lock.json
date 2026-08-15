@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "skills": {
+    "alipay-payment-integration": {
+      "source": "alipay/ai",
+      "sourceType": "github",
+      "skillPath": "skills/alipay-payment-integration/SKILL.md",
+      "computedHash": "8862afa462e7168cc2d83d4c339bf98582eebad9331c4dfa105b04eb3bf302e0"
+    },
+    "anti-ui-slop": {
+      "source": "uizze.com",
+      "sourceUrl": "https://uizze.com",
+      "sourceType": "well-known",
+      "computedHash": "86910a69b953a20ffef7bb915ae481ec463d1c491e3256a4beec157ec92df5e0",
+      "wellKnownDigest": "sha256:191b00c82c3491e4084d5b95c701c0cea030b630aa4672c45311c7891072f852"
+    },
+    "high-end-visual-design": {
+      "source": "leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/soft-skill/SKILL.md",
+      "computedHash": "7db385e4c5370e5a7fca9704a1361b056e4504ea6a03924bb86f33a4f00b5c73"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "195e6037eb1b57620476505efbc3aa7828a73d45f9c63c01403684f08deaa1b2"
+    }
+  }
+}
