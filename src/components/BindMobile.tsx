@@ -204,7 +204,6 @@ export default function BindMobile() {
                   )}
                 </button>
               </div>
-              <p className="text-xs text-zinc-600">开发环境验证码请查看后端日志（SMS_DEV_MODE）</p>
             </div>
 
             <button

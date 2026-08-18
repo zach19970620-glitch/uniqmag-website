@@ -14,7 +14,10 @@ import {
   passwordLogin,
   passwordRegister,
   prepareWechatLogin,
+  resetAppPassword,
+  sendMeSms,
   sendSmsCode,
+  setAppPassword,
   smsLogin,
   updateNickname,
   wechatLogin,
@@ -46,6 +49,7 @@ interface AuthContextValue {
   needsProfile: boolean;
   bootstrapping: boolean;
   sendCode: (mobile: string) => Promise<SmsSendResult>;
+  sendMyCode: () => Promise<SmsSendResult>;
   loginWithCode: (mobile: string, code: string) => Promise<CodeLoginResult>;
   loginWithPassword: (mobile: string, password: string) => Promise<CodeLoginResult>;
   prepareWechat: () => Promise<WeChatPrepareResult>;
@@ -63,6 +67,13 @@ interface AuthContextValue {
     mobile: string;
     code: string;
   }) => Promise<User>;
+  setPassword: (payload: { code: string; password: string }) => Promise<User>;
+  changePassword: (payload: { old_password: string; password: string }) => Promise<User>;
+  resetPassword: (payload: {
+    mobile: string;
+    code: string;
+    password: string;
+  }) => Promise<CodeLoginResult>;
   completeNickname: (nickname: string) => Promise<void>;
   refreshUser: () => Promise<void>;
   logout: () => void;
@@ -74,6 +85,7 @@ function normalizeUser(user: AppUserPublic): User {
   return {
     ...user,
     need_bind_mobile: Boolean(user.need_bind_mobile || !user.mobile),
+    has_password: Boolean(user.has_password),
   };
 }
 
@@ -139,6 +151,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return sendSmsCode(mobile);
   }, []);
 
+  const sendMyCode = useCallback(async () => {
+    return sendMeSms();
+  }, []);
+
   const loginWithCode = useCallback(async (mobile: string, code: string) => {
     const mapped = applyAuthResult(await smsLogin(mobile, code));
     setUser(mapped.user);
@@ -196,6 +212,35 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [],
   );
 
+  const applyPasswordWrite = useCallback(async (result: SmsLoginResult) => {
+    const mapped = applyAuthResult(result);
+    setUser(mapped.user);
+    return mapped;
+  }, []);
+
+  const setPassword = useCallback(
+    async (payload: { code: string; password: string }) => {
+      const mapped = await applyPasswordWrite(await setAppPassword(payload));
+      return mapped.user;
+    },
+    [applyPasswordWrite],
+  );
+
+  const changePassword = useCallback(
+    async (payload: { old_password: string; password: string }) => {
+      const mapped = await applyPasswordWrite(await setAppPassword(payload));
+      return mapped.user;
+    },
+    [applyPasswordWrite],
+  );
+
+  const resetPassword = useCallback(
+    async (payload: { mobile: string; code: string; password: string }) => {
+      return applyPasswordWrite(await resetAppPassword(payload));
+    },
+    [applyPasswordWrite],
+  );
+
   const completeNickname = useCallback(async (nickname: string) => {
     const result = await updateNickname(nickname.trim());
     setUser((prev) =>
@@ -212,6 +257,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             nickname: result.nickname,
             profile_completed: result.profile_completed,
             need_bind_mobile: Boolean(result.need_bind_mobile),
+            has_password: false,
             status: 'active',
           },
     );
@@ -230,6 +276,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       needsProfile: Boolean(user && !user.profile_completed),
       bootstrapping,
       sendCode,
+      sendMyCode,
       loginWithCode,
       loginWithPassword,
       prepareWechat,
@@ -237,6 +284,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       bindPhone,
       changePhone,
+      setPassword,
+      changePassword,
+      resetPassword,
       completeNickname,
       refreshUser,
       logout,
@@ -245,6 +295,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       bootstrapping,
       sendCode,
+      sendMyCode,
       loginWithCode,
       loginWithPassword,
       prepareWechat,
@@ -252,6 +303,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       bindPhone,
       changePhone,
+      setPassword,
+      changePassword,
+      resetPassword,
       completeNickname,
       refreshUser,
       logout,

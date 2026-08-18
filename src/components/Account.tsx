@@ -6,6 +6,7 @@ import { updateNickname } from '../api/auth';
 import { BIND_MOBILE_PATH, CHANGE_MOBILE_PATH } from '../lib/onboarding';
 import PageFrame from './app/PageFrame';
 import AccountNav from './app/AccountNav';
+import PasswordDialog, { type PasswordDialogMode } from './PasswordDialog';
 
 const QUICK_LINKS = [
   { to: '/account/orders', title: '我的订单', desc: '查看物流与申请退款' },
@@ -24,6 +25,7 @@ export default function Account() {
   const [saving, setSaving] = useState(false);
   const [savedHint, setSavedHint] = useState('');
   const [error, setError] = useState('');
+  const [passwordMode, setPasswordMode] = useState<PasswordDialogMode | null>(null);
 
   if (!user) return null;
 
@@ -178,6 +180,31 @@ export default function Account() {
                   </dd>
                 </div>
                 <div className="flex justify-between gap-4">
+                  <dt className="text-zinc-500">登录密码</dt>
+                  <dd className="text-right">
+                    {needsBindMobile ? (
+                      <Link
+                        to={BIND_MOBILE_PATH}
+                        state={{ from: '/account' }}
+                        className="text-white underline-offset-4 hover:underline"
+                      >
+                        请先绑定手机号
+                      </Link>
+                    ) : (
+                      <span className="inline-flex items-center gap-3">
+                        <span>{user.has_password ? '已设置' : '未设置'}</span>
+                        <button
+                          type="button"
+                          onClick={() => setPasswordMode(user.has_password ? 'change' : 'set')}
+                          className="text-zinc-400 underline-offset-4 hover:text-white hover:underline"
+                        >
+                          {user.has_password ? '修改' : '设置'}
+                        </button>
+                      </span>
+                    )}
+                  </dd>
+                </div>
+                <div className="flex justify-between gap-4">
                   <dt className="text-zinc-500">状态</dt>
                   <dd>{user.status === 'active' ? '正常' : user.status}</dd>
                 </div>
@@ -200,6 +227,17 @@ export default function Account() {
           ))}
         </section>
       </div>
+
+      <PasswordDialog
+        open={passwordMode !== null}
+        mode={passwordMode ?? 'set'}
+        maskedMobile={user.mobile}
+        onClose={() => setPasswordMode(null)}
+        onSuccess={() => {
+          setSavedHint(passwordMode === 'change' ? '密码已修改' : '密码已设置');
+          window.setTimeout(() => setSavedHint(''), 2000);
+        }}
+      />
     </PageFrame>
   );
 }

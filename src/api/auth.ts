@@ -6,6 +6,7 @@ export interface AppUserPublic {
   nickname: string | null;
   profile_completed: boolean;
   need_bind_mobile: boolean;
+  has_password: boolean;
   status: string;
 }
 
@@ -111,6 +112,40 @@ export function changeMobile(payload: {
     },
     true,
   );
+}
+
+export function sendMeSms() {
+  return apiRequest<SmsSendResult>(
+    '/app/v1/me/sms/send',
+    { method: 'POST', body: JSON.stringify({}) },
+    true,
+  );
+}
+
+export function setAppPassword(payload: {
+  password: string;
+  code?: string;
+  old_password?: string;
+}) {
+  return apiRequest<PasswordAuthResult>(
+    '/app/v1/me/password',
+    {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+    },
+    true,
+  );
+}
+
+export function resetAppPassword(payload: {
+  mobile: string;
+  code: string;
+  password: string;
+}) {
+  return apiRequest<PasswordAuthResult>('/app/v1/auth/password/reset', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
 }
 
 export interface WeChatPrepareResult {

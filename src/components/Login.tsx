@@ -5,6 +5,7 @@ import { Eye, EyeOff, KeyRound, Loader2, Lock, Smartphone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { BIND_MOBILE_PATH, NICKNAME_PATH, sanitizeReturnTo } from '../lib/onboarding';
 import WeChatQrPanel from './WeChatQrPanel';
+import PasswordDialog from './PasswordDialog';
 
 const PHONE_RE = /^1[3-9]\d{9}$/;
 const CODE_RE = /^\d{6}$/;
@@ -32,6 +33,9 @@ export default function Login() {
   const [sending, setSending] = useState(false);
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [feedback, setFeedback] = useState('');
+  const [forgotOpen, setForgotOpen] = useState(false);
+
+  const noPasswordHint = '请使用验证码登录或先设置密码';
 
   useEffect(() => {
     if (countdown <= 0) return;
@@ -262,9 +266,6 @@ export default function Login() {
                         )}
                       </button>
                     </div>
-                    <p className="text-xs text-zinc-600">
-                      开发环境验证码请查看后端日志（SMS_DEV_MODE）
-                    </p>
                   </div>
 
                   <div
@@ -305,12 +306,35 @@ export default function Login() {
                         {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                     </div>
+                    <div className="flex justify-end">
+                      <button
+                        type="button"
+                        onClick={() => setForgotOpen(true)}
+                        tabIndex={mode === 'password' ? 0 : -1}
+                        className="text-sm text-zinc-500 underline-offset-4 hover:text-white hover:underline"
+                      >
+                        忘记密码？
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 {feedback ? (
                   <p className={`text-sm ${status === 'error' ? 'text-red-400' : 'text-zinc-400'}`}>
-                    {feedback}
+                    {feedback === noPasswordHint ? (
+                      <>
+                        请使用验证码登录或
+                        <button
+                          type="button"
+                          onClick={() => setForgotOpen(true)}
+                          className="underline underline-offset-4 hover:text-white"
+                        >
+                          先设置密码
+                        </button>
+                      </>
+                    ) : (
+                      feedback
+                    )}
                   </p>
                 ) : null}
 
@@ -333,6 +357,13 @@ export default function Login() {
           </form>
         </motion.div>
       </div>
+
+      <PasswordDialog
+        open={forgotOpen}
+        mode="forgot"
+        initialMobile={phone}
+        onClose={() => setForgotOpen(false)}
+      />
     </section>
   );
 }
