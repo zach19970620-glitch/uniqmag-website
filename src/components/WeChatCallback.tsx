@@ -3,10 +3,12 @@ import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { takeAuthFrom } from './WeChatQrPanel';
+import { BIND_MOBILE_PATH, NICKNAME_PATH } from '../lib/onboarding';
 
 export default function WeChatCallback() {
   const [searchParams] = useSearchParams();
-  const { loginWithWechat, isAuthenticated, needsProfile, bootstrapping } = useAuth();
+  const { loginWithWechat, isAuthenticated, needsProfile, bootstrapping } =
+    useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
 
@@ -24,7 +26,14 @@ export default function WeChatCallback() {
         const result = await loginWithWechat(code, state);
         if (cancelled) return;
         const to = takeAuthFrom('/account');
-        navigate(result.isNewUser ? '/onboarding/nickname' : to, { replace: true });
+        if (result.needBindMobile) {
+          navigate(BIND_MOBILE_PATH, { replace: true, state: { from: to } });
+          return;
+        }
+        navigate(result.isNewUser ? NICKNAME_PATH : to, {
+          replace: true,
+          state: result.isNewUser ? { from: to } : undefined,
+        });
       } catch (err) {
         if (!cancelled) {
           setError(err instanceof Error ? err.message : '微信登录失败');
@@ -47,7 +56,13 @@ export default function WeChatCallback() {
   }
 
   if (isAuthenticated && !error) {
-    return <Navigate to={needsProfile ? '/onboarding/nickname' : takeAuthFrom('/account')} replace />;
+    const code = searchParams.get('code')?.trim();
+    const state = searchParams.get('state')?.trim();
+    // 已登录且无授权参数：离开回调页。有 code 时交给 effect，避免抢掉 returnTo。
+    if (!code || !state) {
+      const next = needsProfile ? NICKNAME_PATH : '/account';
+      return <Navigate to={next} replace />;
+    }
   }
 
   return (

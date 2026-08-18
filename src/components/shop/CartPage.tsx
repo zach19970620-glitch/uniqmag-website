@@ -3,13 +3,14 @@ import { Loader2, Minus, Plus, Trash2 } from 'lucide-react';
 import { formatCentLabel } from '../../lib/money';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import { BIND_MOBILE_PATH } from '../../lib/onboarding';
 import PageFrame from '../app/PageFrame';
 import ProductCover from '../app/ProductCover';
 import EmptyState from '../app/EmptyState';
 
 export default function CartPage() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, needsBindMobile } = useAuth();
   const { items, amountCent, loading, error, setQty } = useCart();
 
   /** 下架/删除的商品服务端返回 stock_summary=0，不可结算 */
@@ -18,6 +19,10 @@ export default function CartPage() {
   const goCheckout = () => {
     if (!isAuthenticated) {
       navigate('/login', { state: { from: '/checkout' } });
+      return;
+    }
+    if (needsBindMobile) {
+      navigate(BIND_MOBILE_PATH, { state: { from: '/checkout', required: true } });
       return;
     }
     navigate('/checkout');
@@ -141,7 +146,7 @@ export default function CartPage() {
                 disabled={invalidCount > 0}
                 className="mt-6 w-full rounded-full bg-white py-3 text-sm font-medium text-black transition-transform duration-200 ease-[cubic-bezier(0.32,0.72,0,1)] active:scale-[0.98] disabled:opacity-50"
               >
-                去结算
+                {needsBindMobile ? '先绑定手机号' : '去结算'}
               </button>
             </div>
           </aside>

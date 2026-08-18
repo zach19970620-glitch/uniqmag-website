@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, ShoppingBag, X, UserRound } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import { BIND_MOBILE_PATH, NICKNAME_PATH } from '../lib/onboarding';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -32,10 +33,13 @@ const Navbar = () => {
     { name: '联系我们', href: '/contact' },
   ];
 
-  const accountActive =
-    location.pathname.startsWith('/account') || location.pathname === '/onboarding/nickname';
-
   const displayName = user?.nickname?.trim() || '用户';
+  const accountHref = needsProfile ? NICKNAME_PATH : '/account';
+  const accountLabel = needsProfile ? '完善昵称' : displayName;
+  const accountActive =
+    location.pathname.startsWith('/account') ||
+    location.pathname === BIND_MOBILE_PATH ||
+    location.pathname === NICKNAME_PATH;
 
   return (
     <header
@@ -89,7 +93,7 @@ const Navbar = () => {
             </Link>
             {isAuthenticated ? (
               <Link
-                to={needsProfile ? '/onboarding/nickname' : '/account'}
+                to={accountHref}
                 className={`inline-flex items-center gap-2 text-sm px-3 py-1.5 rounded-full border transition-colors ${
                   accountActive
                     ? 'border-white/20 bg-white/10 text-white'
@@ -99,7 +103,7 @@ const Navbar = () => {
                 <span className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-blue-700 flex items-center justify-center text-[10px] font-semibold">
                   {displayName.slice(0, 1).toUpperCase()}
                 </span>
-                {needsProfile ? '完善昵称' : displayName}
+                {accountLabel}
               </Link>
             ) : (
               <>
@@ -167,7 +171,7 @@ const Navbar = () => {
             </Link>
             {isAuthenticated ? (
               <Link
-                to={needsProfile ? '/onboarding/nickname' : '/account'}
+                to={accountHref}
                 className={`text-sm px-4 py-2 rounded-lg transition-colors inline-flex items-center gap-2 ${
                   accountActive
                     ? 'bg-white/10 text-white font-medium'

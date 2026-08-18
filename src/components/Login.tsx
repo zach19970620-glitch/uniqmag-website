@@ -3,6 +3,7 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, KeyRound, Loader2, Lock, Smartphone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { BIND_MOBILE_PATH, NICKNAME_PATH, sanitizeReturnTo } from '../lib/onboarding';
 import WeChatQrPanel from './WeChatQrPanel';
 
 const PHONE_RE = /^1[3-9]\d{9}$/;
@@ -20,11 +21,7 @@ export default function Login() {
   } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: string } | null)?.from ?? '/account';
-  const safeFrom =
-    !from || from === '/login' || from === '/register' || from === '/onboarding/nickname'
-      ? '/account'
-      : from;
+  const safeFrom = sanitizeReturnTo((location.state as { from?: string } | null)?.from);
 
   const [mode, setMode] = useState<LoginMode>('code');
   const [phone, setPhone] = useState('');
@@ -51,12 +48,23 @@ export default function Login() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to={needsProfile ? '/onboarding/nickname' : safeFrom} replace />;
+    const next = needsProfile ? NICKNAME_PATH : safeFrom;
+    return (
+      <Navigate
+        to={next}
+        replace
+        state={next === NICKNAME_PATH ? { from: safeFrom } : undefined}
+      />
+    );
   }
 
-  const redirectAfterAuth = (isNewUser: boolean) => {
+  const redirectAfterAuth = (needBindMobile: boolean, isNewUser: boolean) => {
+    if (needBindMobile) {
+      navigate(BIND_MOBILE_PATH, { replace: true, state: { from: safeFrom } });
+      return;
+    }
     if (isNewUser) {
-      navigate('/onboarding/nickname', { replace: true });
+      navigate(NICKNAME_PATH, { replace: true, state: { from: safeFrom } });
       return;
     }
     navigate(safeFrom, { replace: true });
@@ -102,7 +110,7 @@ export default function Login() {
       setStatus('loading');
       try {
         const result = await loginWithCode(phone, code);
-        redirectAfterAuth(result.isNewUser);
+        redirectAfterAuth(result.needBindMobile, result.isNewUser);
       } catch (err) {
         setStatus('error');
         setFeedback(err instanceof Error ? err.message : '登录失败，请稍后重试');
@@ -119,7 +127,7 @@ export default function Login() {
     setStatus('loading');
     try {
       const result = await loginWithPassword(phone, password);
-      redirectAfterAuth(result.isNewUser);
+      redirectAfterAuth(result.needBindMobile, result.isNewUser);
     } catch (err) {
       setStatus('error');
       setFeedback(err instanceof Error ? err.message : '登录失败，请稍后重试');

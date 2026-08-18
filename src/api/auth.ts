@@ -5,6 +5,7 @@ export interface AppUserPublic {
   mobile: string;
   nickname: string | null;
   profile_completed: boolean;
+  need_bind_mobile: boolean;
   status: string;
 }
 
@@ -17,13 +18,19 @@ export interface SmsLoginResult {
   token: string;
   is_new_user: boolean;
   profile_completed: boolean;
+  need_bind_mobile: boolean;
   user: AppUserPublic;
+}
+
+export interface BindMobileResult extends SmsLoginResult {
+  merged: boolean;
 }
 
 export interface NicknameUpdateResult {
   id: number;
   nickname: string;
   profile_completed: boolean;
+  need_bind_mobile?: boolean;
 }
 
 /** 与短信登录成功结构一致，便于前端统一处理 */
@@ -72,6 +79,35 @@ export function updateNickname(nickname: string) {
     {
       method: 'PUT',
       body: JSON.stringify({ nickname }),
+    },
+    true,
+  );
+}
+
+/** 微信扫码后强制绑定；目标号已有未绑微信账号时会合并并返回新 token */
+export function bindMobile(mobile: string, code: string) {
+  return apiRequest<BindMobileResult>(
+    '/app/v1/me/mobile/bind',
+    {
+      method: 'POST',
+      body: JSON.stringify({ mobile, code }),
+    },
+    true,
+  );
+}
+
+/** 已绑用户更换手机号；新号被占用则失败，不合并账号 */
+export function changeMobile(payload: {
+  old_mobile: string;
+  old_code: string;
+  mobile: string;
+  code: string;
+}) {
+  return apiRequest<SmsLoginResult>(
+    '/app/v1/me/mobile/change',
+    {
+      method: 'POST',
+      body: JSON.stringify(payload),
     },
     true,
   );

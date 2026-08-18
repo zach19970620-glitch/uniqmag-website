@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { prepareWechatLogin, type WeChatPrepareResult } from '../api/auth';
+import { sanitizeReturnTo } from '../lib/onboarding';
 
 const AUTH_FROM_KEY = 'uniqmag_auth_from';
 const WX_SCRIPT = 'https://res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js';
@@ -52,9 +53,7 @@ export function takeAuthFrom(fallback = '/account'): string {
   try {
     const v = sessionStorage.getItem(AUTH_FROM_KEY);
     sessionStorage.removeItem(AUTH_FROM_KEY);
-    if (v && v !== '/login' && v !== '/register' && v !== '/onboarding/nickname') {
-      return v;
-    }
+    return sanitizeReturnTo(v, fallback);
   } catch {
     /* ignore */
   }

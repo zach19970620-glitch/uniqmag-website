@@ -12,6 +12,7 @@ import { fetchCart, updateCart } from '../api/cart';
 import type { CartItem } from '../api/types';
 import { ApiError } from '../api/client';
 import { useAuth } from './AuthContext';
+import { isNeedBindMobileError } from '../lib/onboarding';
 
 interface CartContextValue {
   items: CartItem[];
@@ -55,15 +56,16 @@ function sumAmount(items: CartItem[]) {
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const { isAuthenticated, bootstrapping } = useAuth();
+  const { isAuthenticated, needsBindMobile, bootstrapping } = useAuth();
+  const remoteCartReady = isAuthenticated && !needsBindMobile;
   const [items, setItems] = useState<CartItem[]>(() => readLocal());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  /** 上一次已确定的登录态；null = 尚未确定（bootstrap 中），用于区分「登录动作」与「会话恢复」 */
-  const wasAuthed = useRef<boolean | null>(null);
+  /** 上一次已确定的远端购物车就绪态；null = 尚未确定（bootstrap 中） */
+  const wasRemote = useRef<boolean | null>(null);
 
   const refresh = useCallback(async () => {
-    if (!isAuthenticated) {
+    if (!remoteCartReady) {
       setItems(readLocal());
       return;
     }
@@ -73,13 +75,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const data = await fetchCart();
       setItems(data.items ?? []);
     } catch (err) {
+      if (isNeedBindMobileError(err)) {
+        setItems(readLocal());
+        return;
+      }
       setError(err instanceof Error ? err.message : '购物车加载失败');
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [remoteCartReady]);
 
-  /** 登录动作时把游客购物车合并进服务端购物车（重复商品数量相加，上限 99），随后清空游客存储 */
+  /** 登录或绑手机后把本地购物车合并进服务端（重复商品数量相加，上限 99） */
   const mergeGuestCart = useCallback(async (guest: CartItem[]) => {
     setLoading(true);
     setError('');
@@ -101,6 +107,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setItems(data.items ?? []);
       writeLocal([]);
     } catch (err) {
+      if (isNeedBindMobileError(err)) {
+        setItems(guest);
+        writeLocal(guest);
+        return;
+      }
       setError(err instanceof Error ? err.message : '购物车同步失败');
     } finally {
       setLoading(false);
@@ -109,10 +120,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (bootstrapping) return;
-    const was = wasAuthed.current;
-    wasAuthed.current = isAuthenticated;
+    const was = wasRemote.current;
+    wasRemote.current = remoteCartReady;
 
-    if (isAuthenticated && was === false) {
+    if (remoteCartReady && was === false) {
       const guest = readLocal();
       if (guest.length > 0) {
         void mergeGuestCart(guest);
@@ -120,12 +131,12 @@ export function CartProvider({ children }: { children: ReactNode }) {
       }
     }
     void refresh();
-  }, [bootstrapping, isAuthenticated, refresh, mergeGuestCart]);
+  }, [bootstrapping, remoteCartReady, refresh, mergeGuestCart]);
 
   const syncRemote = useCallback(
     async (next: CartItem[]) => {
       setItems(next);
-      if (!isAuthenticated) {
+      if (!remoteCartReady) {
         writeLocal(next);
         return;
       }
@@ -137,10 +148,14 @@ export function CartProvider({ children }: { children: ReactNode }) {
         setError('');
       } catch (err) {
         if (err instanceof ApiError && err.status === 401) return;
+        if (isNeedBindMobileError(err)) {
+          writeLocal(next);
+          return;
+        }
         setError(err instanceof Error ? err.message : '购物车同步失败');
       }
     },
-    [isAuthenticated],
+    [remoteCartReady],
   );
 
   const setQty = useCallback(

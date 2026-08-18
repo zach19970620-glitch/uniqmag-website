@@ -7,6 +7,7 @@ import type { Address, CartItem } from '../../api/types';
 import { formatCentLabel } from '../../lib/money';
 import { startPay } from '../../lib/pay';
 import { useCart } from '../../context/CartContext';
+import { BIND_MOBILE_PATH, isNeedBindMobileError } from '../../lib/onboarding';
 import PageFrame from '../app/PageFrame';
 import ProductCover from '../app/ProductCover';
 import EmptyState from '../app/EmptyState';
@@ -65,7 +66,15 @@ export default function CheckoutPage() {
         setAddressId(preferred?.id ?? null);
         if (list.length === 0) setAddingAddress(true);
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : '地址加载失败');
+        if (cancelled) return;
+        if (isNeedBindMobileError(err)) {
+          navigate(BIND_MOBILE_PATH, {
+            replace: true,
+            state: { from: '/checkout', resume: location.state, required: true },
+          });
+          return;
+        }
+        setError(err instanceof Error ? err.message : '地址加载失败');
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -73,7 +82,7 @@ export default function CheckoutPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [location.state, navigate]);
 
   const handleSaveAddress = async (e: FormEvent) => {
     e.preventDefault();
@@ -142,6 +151,13 @@ export default function CheckoutPage() {
       });
       if (resultPath) navigate(resultPath, { replace: true });
     } catch (err) {
+      if (isNeedBindMobileError(err)) {
+        navigate(BIND_MOBILE_PATH, {
+          replace: true,
+          state: { from: '/checkout', resume: location.state, required: true },
+        });
+        return;
+      }
       setError(err instanceof Error ? err.message : '下单失败');
       setSubmitting(false);
     }

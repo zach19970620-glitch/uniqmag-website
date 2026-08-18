@@ -5,6 +5,7 @@ import type { ShopProduct } from '../../api/types';
 import { formatCentLabel } from '../../lib/money';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import { BIND_MOBILE_PATH } from '../../lib/onboarding';
 
 interface ProductBuyPanelProps {
   shop: ShopProduct | undefined;
@@ -20,7 +21,7 @@ export default function ProductBuyPanel({
   fromPath,
 }: ProductBuyPanelProps) {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, needsBindMobile } = useAuth();
   const { addItem } = useCart();
   const [qty, setQty] = useState(1);
   const [busy, setBusy] = useState(false);
@@ -92,23 +93,26 @@ export default function ProductBuyPanel({
       setError('该商品暂时缺货');
       return;
     }
+    const buyNow = {
+      product_id: shop.id,
+      sku: shop.sku,
+      title: shop.name,
+      cover: shop.cover,
+      price_cent: shop.price_cent,
+      stock_summary: shop.stock_summary,
+      qty,
+    };
     if (!isAuthenticated) {
       navigate('/login', { state: { from: fromPath } });
       return;
     }
-    navigate('/checkout', {
-      state: {
-        buyNow: {
-          product_id: shop.id,
-          sku: shop.sku,
-          title: shop.name,
-          cover: shop.cover,
-          price_cent: shop.price_cent,
-          stock_summary: shop.stock_summary,
-          qty,
-        },
-      },
-    });
+    if (needsBindMobile) {
+      navigate(BIND_MOBILE_PATH, {
+        state: { from: '/checkout', resume: { buyNow }, required: true },
+      });
+      return;
+    }
+    navigate('/checkout', { state: { buyNow } });
   };
 
   return (

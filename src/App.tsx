@@ -22,9 +22,11 @@ import Contact from './components/Contact';
 import Login from './components/Login';
 import Register from './components/Register';
 import WeChatCallback from './components/WeChatCallback';
+import BindMobile from './components/BindMobile';
+import ChangeMobile from './components/ChangeMobile';
 import CompleteNickname from './components/CompleteNickname';
 import Account from './components/Account';
-import ProtectedRoute from './components/ProtectedRoute';
+import ProtectedRoute, { RequireMobile } from './components/ProtectedRoute';
 import { ShopIndexRedirect, ShopItemRedirect } from './components/shop/ShopRedirect';
 import CartPage from './components/shop/CartPage';
 import CheckoutPage from './components/shop/CheckoutPage';
@@ -41,6 +43,14 @@ import Background from './components/Background';
 
 function guarded(node: ReactNode) {
   return <ProtectedRoute>{node}</ProtectedRoute>;
+}
+
+function mobileGuarded(node: ReactNode) {
+  return (
+    <ProtectedRoute>
+      <RequireMobile>{node}</RequireMobile>
+    </ProtectedRoute>
+  );
 }
 
 function App() {
@@ -63,24 +73,26 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/auth/wechat/callback" element={<WeChatCallback />} />
+                <Route path="/onboarding/mobile" element={<BindMobile />} />
                 <Route path="/onboarding/nickname" element={<CompleteNickname />} />
 
                 <Route path="/shop" element={<ShopIndexRedirect />} />
                 <Route path="/shop/:id" element={<ShopItemRedirect />} />
                 <Route path="/cart" element={<CartPage />} />
-                <Route path="/checkout" element={guarded(<CheckoutPage />)} />
-                <Route path="/pay/result" element={guarded(<PayResultPage />)} />
+                <Route path="/checkout" element={mobileGuarded(<CheckoutPage />)} />
+                <Route path="/pay/result" element={mobileGuarded(<PayResultPage />)} />
 
                 <Route path="/account" element={guarded(<Account />)} />
-                <Route path="/account/orders" element={guarded(<OrdersPage />)} />
-                <Route path="/account/orders/:id" element={guarded(<OrderDetailPage />)} />
-                <Route path="/account/addresses" element={guarded(<AddressesPage />)} />
-                <Route path="/account/points" element={guarded(<PointsPage />)} />
-                <Route path="/account/devices" element={guarded(<DevicesPage />)} />
-                <Route path="/account/devices/bind" element={guarded(<BindDevicePage />)} />
+                <Route path="/account/mobile" element={mobileGuarded(<ChangeMobile />)} />
+                <Route path="/account/orders" element={mobileGuarded(<OrdersPage />)} />
+                <Route path="/account/orders/:id" element={mobileGuarded(<OrderDetailPage />)} />
+                <Route path="/account/addresses" element={mobileGuarded(<AddressesPage />)} />
+                <Route path="/account/points" element={mobileGuarded(<PointsPage />)} />
+                <Route path="/account/devices" element={mobileGuarded(<DevicesPage />)} />
+                <Route path="/account/devices/bind" element={mobileGuarded(<BindDevicePage />)} />
                 <Route
                   path="/account/devices/bind/result"
-                  element={guarded(<BindResultPage />)}
+                  element={mobileGuarded(<BindResultPage />)}
                 />
               </Routes>
             </main>

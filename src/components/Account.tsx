@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Loader2, LogOut } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { updateNickname } from '../api/auth';
+import { BIND_MOBILE_PATH, CHANGE_MOBILE_PATH } from '../lib/onboarding';
 import PageFrame from './app/PageFrame';
 import AccountNav from './app/AccountNav';
 
@@ -16,7 +17,7 @@ const QUICK_LINKS = [
 ];
 
 export default function Account() {
-  const { user, logout, refreshUser } = useAuth();
+  const { user, needsBindMobile, logout, refreshUser } = useAuth();
   const navigate = useNavigate();
   const [editing, setEditing] = useState(false);
   const [nickname, setNickname] = useState(user?.nickname ?? '');
@@ -88,9 +89,21 @@ export default function Account() {
             </div>
             <div className="min-w-0">
               <p className="truncate text-xl font-semibold">{displayName}</p>
-              <p className="mt-1 text-sm tabular-nums text-zinc-400">{user.mobile}</p>
+              <p className="mt-1 text-sm tabular-nums text-zinc-400">
+                {needsBindMobile ? '未绑定手机号' : user.mobile}
+              </p>
             </div>
           </div>
+
+          {needsBindMobile ? (
+            <Link
+              to={BIND_MOBILE_PATH}
+              state={{ from: '/account' }}
+              className="mt-5 flex w-full items-center justify-center rounded-full bg-white py-2.5 text-sm font-medium text-black transition-opacity hover:opacity-90"
+            >
+              绑定手机号
+            </Link>
+          ) : null}
 
           <div className="mt-6 border-t border-white/10 pt-6">
             <div className="mb-3 flex items-center justify-between">
@@ -140,6 +153,30 @@ export default function Account() {
               </form>
             ) : (
               <dl className="space-y-3 text-sm">
+                <div className="flex items-center justify-between gap-4">
+                  <dt className="text-zinc-500">手机号</dt>
+                  <dd className="text-right">
+                    {needsBindMobile ? (
+                      <Link
+                        to={BIND_MOBILE_PATH}
+                        state={{ from: '/account' }}
+                        className="text-white underline-offset-4 hover:underline"
+                      >
+                        去绑定
+                      </Link>
+                    ) : (
+                      <span className="inline-flex items-center gap-3">
+                        <span className="tabular-nums">{user.mobile}</span>
+                        <Link
+                          to={CHANGE_MOBILE_PATH}
+                          className="text-zinc-400 underline-offset-4 hover:text-white hover:underline"
+                        >
+                          更换
+                        </Link>
+                      </span>
+                    )}
+                  </dd>
+                </div>
                 <div className="flex justify-between gap-4">
                   <dt className="text-zinc-500">状态</dt>
                   <dd>{user.status === 'active' ? '正常' : user.status}</dd>

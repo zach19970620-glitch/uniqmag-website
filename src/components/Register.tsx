@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Loader2, Lock, Mail, Smartphone, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { NICKNAME_PATH } from '../lib/onboarding';
 
 const PHONE_RE = /^1[3-9]\d{9}$/;
 
@@ -28,7 +29,12 @@ export default function Register() {
   }
 
   if (isAuthenticated) {
-    return <Navigate to={needsProfile ? '/onboarding/nickname' : '/account'} replace />;
+    return (
+      <Navigate
+        to={needsProfile ? NICKNAME_PATH : '/account'}
+        replace
+      />
+    );
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {

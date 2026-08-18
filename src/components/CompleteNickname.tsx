@@ -1,12 +1,17 @@
 import { useState, type FormEvent } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Loader2, Sparkles, User } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { sanitizeReturnTo, type OnboardingHandoff } from '../lib/onboarding';
 
 export default function CompleteNickname() {
-  const { user, isAuthenticated, needsProfile, completeNickname, bootstrapping } = useAuth();
+  const { user, isAuthenticated, needsProfile, completeNickname, bootstrapping } =
+    useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const handoff = (location.state as OnboardingHandoff | null) ?? {};
+  const returnTo = sanitizeReturnTo(handoff.from);
   const [nickname, setNickname] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'error'>('idle');
   const [feedback, setFeedback] = useState('');
@@ -24,7 +29,7 @@ export default function CompleteNickname() {
   }
 
   if (!needsProfile) {
-    return <Navigate to="/account" replace />;
+    return <Navigate to={returnTo} replace state={handoff.resume} />;
   }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -45,7 +50,7 @@ export default function CompleteNickname() {
     setStatus('loading');
     try {
       await completeNickname(trimmed);
-      navigate('/account', { replace: true });
+      navigate(returnTo, { replace: true, state: handoff.resume });
     } catch (err) {
       setStatus('error');
       setFeedback(err instanceof Error ? err.message : '保存失败，请稍后重试');
@@ -73,7 +78,7 @@ export default function CompleteNickname() {
             <p className="mb-3 text-xs tracking-[0.28em] uppercase text-zinc-500">欢迎加入</p>
             <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-3">完善昵称</h1>
             <p className="text-zinc-400 text-sm leading-relaxed">
-              账号已创建（{user?.mobile}）
+              {user?.mobile ? `账号已创建（${user.mobile}）` : '账号已创建'}
               <br />
               设置昵称后即可进入个人中心
             </p>
